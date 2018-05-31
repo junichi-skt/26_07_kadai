@@ -1,5 +1,5 @@
 # 26_07_kadai
-WEBサイトからトピックNewsをScrapingしてきてAlexaさんに読ませたい的なもの。(工事中)
+WEBサイトからトピックNewsをScrapingしてきてDB格納＆Alexaさんが読めるデータを生成する的なもの。
 
 機能について<br>
 <br>

@@ -25,9 +25,10 @@ if($status==false) {
   //FETCH_ASSOC=http://php.net/manual/ja/pdostatement.fetch.php
   //演算子.=を使うのはwhile処理でどんどん変数に加えていくから。
   while( $result = $stmt->fetch(PDO::FETCH_ASSOC)){ 
-    $view .= '<p>';
-    $view .= $result["news_id"].'<br>'.$result["news_date"].'<br>'.$result["news_title"].'<br>'.$result["news_contents"].'<br>';
-    $view .= '</p>';  
+    $view .= '<div class="article"><p class="news-date">'.$result["news_date"].'</p><br>';
+    $view .= '<p class="news-title">'.$result["news_title"].'</p><br>';
+    $view .= '<p class="news-contents">'.$result["news_contents"].'</p><br>';
+    $view .= '</p></div>';
   }
 }
 ?>
@@ -42,9 +43,18 @@ if($status==false) {
 </head>
 
 <div>
-  検索結果表示(最大表示：最新10件まで)
-    <div><?=$view?></div>
+  検索結果表示(最大表示件数：最新10件までだよ)
+  <div id="search-result"><?=$view?></div>
 </div>
+
+  <input type="BUTTON" value="音声読み上げ">
+
+  <br>
+  <br>
+  <a href="select.html">検索画面に戻る</a>
+
+<script src="http://code.jquery.com/jquery-3.2.1.js"></script>
+<script src="./js/yomiagechan.js"></script>
 
 </body>
 </html>

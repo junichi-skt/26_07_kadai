@@ -1,8 +1,5 @@
-
 <?php
-
 // ジャンル選択データが飛ばされてこない時の対応
-
 if(!isset($_POST["pagetype"]) ||$_POST["pagetype"] == ""){
 	exit('ParamError');
   }else{
@@ -10,9 +7,10 @@ if(!isset($_POST["pagetype"]) ||$_POST["pagetype"] == ""){
   }
 
 
-// 選ばれたジャンルのスクレイピング処理
+// 選ばれたジャンルのスクレイピング処理。まず、phpQueryを読む。
 require_once('phpQueryAllInOne.php');
 
+// 選ばれたジャンルのトップニュースたちのURLを読み込む関数。
 function scrape_urls() {
 	$pageType = $_POST["pagetype"];
 	$format = "https://natalie.mu/%s/news";
@@ -29,7 +27,7 @@ function scrape_urls() {
 	return $urls;
 }
 
-//トップページに出てるニュースを一個ずつとってきてDB格納する処理
+// ニュースのIDと配信日とタイトルと記事をスクレイピングする関数
 function get_ids($urls) {
 	$newsIds = [];
 	foreach ( $urls as $url ) {
@@ -39,7 +37,7 @@ function get_ids($urls) {
 		$title = $obj->find(".NA_articleHeader > h1")->text();
 		$contents = $obj['.NA_articleBody > p']->text();
 
-		//広告ページ(＝タイトル取れない)以外のときに処理。
+		//ナタリーさん広告ページ(＝タイトル取れない)ときは処理しないように。
 		if($title != null){
 			preg_match("/\d{6}/", $url, $matches);
 			$newsId = $matches[0];
@@ -50,6 +48,7 @@ function get_ids($urls) {
 	return $newsIds;
 }
 
+// スクレイピングしたニュース情報をDB格納する関数
 function upinsert($newsId, $newsDate, $pageType, $title, $contents) {
 //DB接続(root以降はDBのユーザー名とパスワード)
 	try {
@@ -66,20 +65,21 @@ function upinsert($newsId, $newsDate, $pageType, $title, $contents) {
 			$stmt->bindValue('a4', $title, PDO::PARAM_STR);  //Integer（数値の場合 PDO::PARAM_INT)
 			$stmt->bindValue('a5', $contents, PDO::PARAM_STR);  //Integer（数値の場合 PDO::PARAM_INT)
 			$stmt->execute();//executeでSQL実行だよー。
-			echo $newsId;
-			echo '<br>';
-			echo $newsDate;
-			echo '<br>';
-			echo $title;
-			echo '<br>';
-			echo $contents;
-			echo '<br>';
-			print_r($stmt->errorInfo());
+			// echo $newsId;
+			// echo '<br>';
+			// // echo $newsDate;
+			// // echo '<br>';
+			// echo $title;
+			// echo '<br>';
+			// echo $contents;
+			// echo '<br>';
+			// print_r($stmt->errorInfo());
 	} catch (PODException $e) {
 		exit('DbConnectError:'.$e->getMessage());
   }
 }
 
+// スクレイピングしてDB格納したニュースのなかから最新4件ピックアップしてAlexaスキルのお作法どおりのJSONにする関数
 function build_json() {
 	$dbh  = new PDO('mysql:dbname=gs_db;charset=utf8;host=localhost','root','');
 	$stmt = $dbh-> query("SET NAMES utf8;");
@@ -87,7 +87,7 @@ function build_json() {
 
 	$res  = [];
 	foreach ($stmt as $row) {
-		print($row['news_contents']);
+		// print($row['news_contents']);
 		array_push(
 			$res,
 			array(
@@ -104,13 +104,11 @@ function build_json() {
 	return $json;
 }
 
-// function scp_json($file) {
-// 	$cmd = sprintf("scp -i ~/pem/sekita.pem ./%s ec2-user@54.91.175.119:/usr/share/nginx/html/", $file);
-// 	echo exec($cmd);
-// }
 
+// build_json関数で作ったJSONファイルをWEBに転送してAlexaさんが読めるように同期する関数。
+// pemさんを配置してない環境では転送できませんよー。
 function scp_json($file) {
-	echo "hoge";
+	// echo "hoge";
 	#$cmd = ‘cp test.php test2.php’;
 	$cmd = "scp -o 'StrictHostKeyChecking=no' -i ./pem/sekita.pem ./gs.json ec2-user@54.91.175.119:/usr/share/nginx/html/";
 	$array = [];
@@ -122,7 +120,7 @@ function scp_json($file) {
 	}
 
 
-
+// スクレイピングするURLたちを変数に格納して、それぞれの中身をスクレイピングしたら、情報をDBに格納するよー。
 $urls = scrape_urls();
 $newsIds  = get_ids($urls);
 foreach( $newsIds as $newsId ) {
@@ -136,13 +134,15 @@ foreach( $newsIds as $newsId ) {
 	$replace = array("-","-","");
 	$newsDate = str_replace($search,$replace,$str);
 	upinsert($newsId, $newsDate, $pageType, $title, $contents);
-	echo $newsId;
+	echo '<div class = "id-result">newsID:'.$newsId.'</div><br>';
+	echo '<div class = "title-result">タイトル:「'.$title."」のDB格納が完了しました。<br><br>";
 }
 
+// JSONデータを作って変数に格納したらgs.jsonってファイルにUTF8で保存してscpでWEBに同期します。
 $json = build_json();
 $filename = 'gs.json';
 $json_utf8 = mb_convert_encoding($json, 'UTF-8');
-print($json);
+// print($json);
 file_put_contents($filename, $json_utf8);
 scp_json($filename);
 
@@ -155,8 +155,14 @@ scp_json($filename);
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<title>ニュース取得</title>
+	<!-- <link rel="stylesheet" href="./css/reset.css"> -->
+    <link rel="stylesheet" href="./css/style.css"> 
+
 </head>
 <body>
-	
+
+<br>
+<br>
+<a href="menu.html">メニューに戻る</a>
 </body>
 </html>

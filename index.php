@@ -2,14 +2,13 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>データ登録</title>
+  <title>ニュース取得</title>
 </head>
 <body>
-
+<h3>ニュース取得</h3>
 <form method="post" action="scraping.php">
 
-    ニュース取得ページ選択
-    <br>
+    <p>取得するニュースのジャンルを選択してください</p>
     <select name="pagetype">
       <option value="music">音楽</option>
       <option value="comic">コミック</option>
@@ -21,7 +20,9 @@
      <input type="submit" value="実行">
 
 </form>
-
+<br>
+<br>
+<a href="menu.html">メニューに戻る</a>
 
 
 </body>

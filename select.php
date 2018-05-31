@@ -28,7 +28,7 @@ if($status==false) {
     $view .= '<div class="article"><p class="news-date">'.$result["news_date"].'</p><br>';
     $view .= '<p class="news-title">'.$result["news_title"].'</p><br>';
     $view .= '<p class="news-contents">'.$result["news_contents"].'</p><br>';
-    $view .= '</p></div>';
+    $view .= '</p></div><hr>';
   }
 }
 ?>
@@ -36,14 +36,17 @@ if($status==false) {
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>検索結果表示</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>検索結果表示</title>
+  <!-- <link rel="stylesheet" href="./css/reset.css"> -->
+  <link rel="stylesheet" href="./css/style.css"> 
 </head>
 
 <div>
-  <h1>検索結果表示(最大表示件数：最新10件までだよ)</h1>
+<h3>ニュース検索</h3>
+<p>検索結果表示(最大表示件数：最新10件までだよ)</p>
 
   <input id ="read" type="BUTTON" value="タイトル音声読み上げ">
   <br>

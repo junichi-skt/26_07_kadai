@@ -43,13 +43,14 @@ if($status==false) {
 </head>
 
 <div>
-  検索結果表示(最大表示件数：最新10件までだよ)
+  <h1>検索結果表示(最大表示件数：最新10件までだよ)</h1>
+
+  <input id ="read" type="BUTTON" value="タイトル音声読み上げ">
+  <br>
+  <br>
   <div id="search-result"><?=$view?></div>
 </div>
 
-  <input type="BUTTON" value="音声読み上げ">
-
-  <br>
   <br>
   <a href="select.html">検索画面に戻る</a>
 

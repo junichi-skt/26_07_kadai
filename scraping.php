@@ -104,10 +104,24 @@ function build_json() {
 	return $json;
 }
 
+// function scp_json($file) {
+// 	$cmd = sprintf("scp -i ~/pem/sekita.pem ./%s ec2-user@54.91.175.119:/usr/share/nginx/html/", $file);
+// 	echo exec($cmd);
+// }
+
 function scp_json($file) {
-	$cmd = sprintf("scp -i ~/pem/sekita.pem ./%s ec2-user@54.91.175.119:/usr/share/nginx/html/", $file);
-	echo exec($cmd);
-}
+	echo "hoge";
+	#$cmd = ‘cp test.php test2.php’;
+	$cmd = "scp -o 'StrictHostKeyChecking=no' -i ./pem/sekita.pem ./gs.json ec2-user@54.91.175.119:/usr/share/nginx/html/";
+	$array = [];
+	if ( !exec("$cmd 2>&1",$array)) {
+	   //command失敗を検知して処理したい
+	   echo "NG";
+	}
+	var_dump($array);
+	}
+
+
 
 $urls = scrape_urls();
 $newsIds  = get_ids($urls);

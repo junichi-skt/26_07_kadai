@@ -88,12 +88,15 @@ function build_json() {
 	$res  = [];
 	foreach ($stmt as $row) {
 		// print($row['news_contents']);
+		$newsDateJson = str_replace(" ","T",$row['news_date']);
 		array_push(
 			$res,
 			array(
 				'uid'			 => $row['news_id'],
 				'titleText'		 => $row['news_title'],
-				'updateDate'	 => $row['news_date'],
+				'updateDate'	 => $newsDateJson.".0Z",
+				// 'updateDate'	 => "2018-05-29T00:00:00.0Z",
+				// 'updateDate'	 => $row['news_date'].".0Z",
 				'mainText'		 => $row['news_contents'],
 				'redirectionUrl' => "https://natalie.mu/".$row['news_type']."/news/".$row['news_id']
 			)
@@ -160,6 +163,9 @@ scp_json($filename);
 
 </head>
 <body>
+<div class = "">
+
+</div>
 
 <br>
 <br>
